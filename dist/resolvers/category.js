@@ -15,40 +15,37 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoryResolver = void 0;
 const Category_1 = require("../entities/Category");
 const type_graphql_1 = require("type-graphql");
+const CreateCategoryInput_1 = require("../inputs/CreateCategoryInput");
+const UpdateCategoryInput_1 = require("../inputs/UpdateCategoryInput");
 let CategoryResolver = class CategoryResolver {
     hello() {
         return "hello world";
     }
     categories() {
-        return Category_1.TableCategory.find({});
+        return Category_1.TableCategory.find();
     }
     category(id) {
-        return Category_1.TableCategory.findOneBy({ id });
+        return Category_1.TableCategory.findOne({ where: { id } });
     }
-    deleteCategory(id) {
-        try {
-            Category_1.TableCategory.delete({ id });
-            return true;
-        }
-        catch (_a) {
-            return false;
-        }
+    async createCategory(data) {
+        const category = Category_1.TableCategory.create(data);
+        await category.save();
+        return category;
     }
-    async createCategory(category_name, description, primary_category_id) {
-        return Category_1.TableCategory.create({ category_name, description, primary_category_id }).save();
+    async updateCategory(id, data) {
+        const category = await Category_1.TableCategory.findOne({ where: { id } });
+        if (!category)
+            throw new Error("Category not found!");
+        Object.assign(category, data);
+        await category.save();
+        return category;
     }
-    updateCategory(id, category_name) {
-        const category = Category_1.TableCategory.findOneBy({ id });
-        if (!category) {
-            return null;
-        }
-        try {
-            Category_1.TableCategory.update({ id }, { category_name });
-            return true;
-        }
-        catch (_a) {
-            return false;
-        }
+    async deleteCategory(id) {
+        const category = await category.findOne({ where: { id } });
+        if (!category)
+            throw new Error("Category not found!");
+        await category.remove();
+        return true;
     }
 };
 __decorate([
@@ -61,39 +58,37 @@ __decorate([
     (0, type_graphql_1.Query)(() => [Category_1.TableCategory]),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], CategoryResolver.prototype, "categories", null);
 __decorate([
     (0, type_graphql_1.Query)(() => Category_1.TableCategory, { nullable: true }),
-    __param(0, (0, type_graphql_1.Arg)("id", () => type_graphql_1.Int)),
+    __param(0, (0, type_graphql_1.Arg)("id")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
 ], CategoryResolver.prototype, "category", null);
 __decorate([
-    (0, type_graphql_1.Mutation)(() => Boolean),
-    __param(0, (0, type_graphql_1.Arg)("id", () => type_graphql_1.Int)),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", Boolean)
-], CategoryResolver.prototype, "deleteCategory", null);
-__decorate([
     (0, type_graphql_1.Mutation)(() => Category_1.TableCategory),
-    __param(0, (0, type_graphql_1.Arg)("category_name", () => String)),
-    __param(1, (0, type_graphql_1.Arg)("description", () => String)),
-    __param(2, (0, type_graphql_1.Arg)("primary_category_id", () => type_graphql_1.Int)),
+    __param(0, (0, type_graphql_1.Arg)("data")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, Number]),
+    __metadata("design:paramtypes", [CreateCategoryInput_1.CreateCategoryInput]),
     __metadata("design:returntype", Promise)
 ], CategoryResolver.prototype, "createCategory", null);
 __decorate([
-    (0, type_graphql_1.Mutation)(() => Boolean, { nullable: true }),
-    __param(0, (0, type_graphql_1.Arg)("id", () => type_graphql_1.Int)),
-    __param(1, (0, type_graphql_1.Arg)("category_name", () => String)),
+    (0, type_graphql_1.Mutation)(() => Category_1.TableCategory),
+    __param(0, (0, type_graphql_1.Arg)("id")),
+    __param(1, (0, type_graphql_1.Arg)("data")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, String]),
-    __metadata("design:returntype", Object)
+    __metadata("design:paramtypes", [String, UpdateCategoryInput_1.UpdateCategoryInput]),
+    __metadata("design:returntype", Promise)
 ], CategoryResolver.prototype, "updateCategory", null);
+__decorate([
+    (0, type_graphql_1.Mutation)(() => Boolean),
+    __param(0, (0, type_graphql_1.Arg)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], CategoryResolver.prototype, "deleteCategory", null);
 CategoryResolver = __decorate([
     (0, type_graphql_1.Resolver)()
 ], CategoryResolver);

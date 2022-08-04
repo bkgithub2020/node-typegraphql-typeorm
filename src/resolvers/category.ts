@@ -1,5 +1,7 @@
 import { TableCategory as Category } from "../entities/Category";
 import { Query, Resolver, Arg, Mutation, Int } from "type-graphql";
+import { CreateCategoryInput } from "../inputs/CreateCategoryInput";
+import { UpdateCategoryInput } from "../inputs/UpdateCategoryInput";
 
 @Resolver()
 export class CategoryResolver {
@@ -7,65 +9,40 @@ export class CategoryResolver {
   hello(): string {
     return "hello world";
   }
+  
 
   @Query(() => [Category])
-  categories(): Promise<Category[]> {
-    return Category.find({});
+  categories() {
+    return Category.find();
   }
 
   @Query(() => Category, { nullable: true })
-  category(
-    @Arg("id", () => Int)
-    id: number
-  ): Promise<Category | undefined> {
-    return Category.findOneBy({ id });
+  category(@Arg("id") id: string) {
+    return Category.findOne({ where: { id } });
   }
 
-  @Mutation(() => Boolean)
-  deleteCategory(
-    @Arg("id", () => Int)
-    id: number
-  ): boolean {
-    try {
-      Category.delete({ id });
-      return true;
-    } catch {
-      return false;
-    }
+
+  @Mutation(() => Category)
+  async createCategory(@Arg("data") data: CreateCategoryInput) {
+    const category = Category.create(data);
+    await category.save();
+    return category;
   }
 
   @Mutation(() => Category)
-  async createCategory(
-    @Arg("category_name", () => String)
-    category_name: string,
-    @Arg("description", () => String)
-    description: string,
-    @Arg("primary_category_id", () => Int)
-    primary_category_id: number,
-  ): Promise<Category> {
-    return Category.create({ category_name, description,primary_category_id}).save();
+  async updateCategory(@Arg("id") id: string, @Arg("data") data: UpdateCategoryInput) {
+    const category = await Category.findOne({ where: { id } });
+    if (!category) throw new Error("Category not found!");
+    Object.assign(category, data);
+    await category.save();
+    return category;
   }
 
-  @Mutation(() => Boolean, { nullable: true })
-  updateCategory(
-    @Arg("id", () => Int)
-    id: number,
-
-    @Arg("category_name", () => String)
-    category_name: string,
-
-   
-  ): boolean | null {
-    const category = Category.findOneBy({ id });
-    if (!category) {
-      return null;
-    }
-
-    try {
-      Category.update({ id }, { category_name });
-      return true;
-    } catch {
-      return false;
-    }
+  @Mutation(() => Boolean)
+  async deleteCategory(@Arg("id") id: string) {
+    const category = await category.findOne({ where: { id } });
+    if (!category) throw new Error("Category not found!");
+    await category.remove();
+    return true;
   }
 }
