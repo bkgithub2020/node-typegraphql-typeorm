@@ -19,10 +19,10 @@ let CategoryResolver = class CategoryResolver {
     hello() {
         return "hello world";
     }
-    tasks() {
+    categories() {
         return Category_1.TableCategory.find({});
     }
-    task(id) {
+    category(id) {
         return Category_1.TableCategory.findOneBy({ id });
     }
     deleteCategory(id) {
@@ -62,14 +62,14 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], CategoryResolver.prototype, "tasks", null);
+], CategoryResolver.prototype, "categories", null);
 __decorate([
     (0, type_graphql_1.Query)(() => Category_1.TableCategory, { nullable: true }),
     __param(0, (0, type_graphql_1.Arg)("id", () => type_graphql_1.Int)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
-], CategoryResolver.prototype, "task", null);
+], CategoryResolver.prototype, "category", null);
 __decorate([
     (0, type_graphql_1.Mutation)(() => Boolean),
     __param(0, (0, type_graphql_1.Arg)("id", () => type_graphql_1.Int)),

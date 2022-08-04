@@ -9,12 +9,12 @@ export class CategoryResolver {
   }
 
   @Query(() => [Category])
-  tasks(): Promise<Category[]> {
+  categories(): Promise<Category[]> {
     return Category.find({});
   }
 
   @Query(() => Category, { nullable: true })
-  task(
+  category(
     @Arg("id", () => Int)
     id: number
   ): Promise<Category | undefined> {
