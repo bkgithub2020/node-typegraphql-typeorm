@@ -7,7 +7,9 @@ import { buildSchema } from "type-graphql";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 import { createConnection } from 'typeorm';
 import { Task } from './entities/Task';
+import { Book } from './entities/Book';
 import { TableCategory as Category } from './entities/Category';
+import { BookResolver } from "./resolvers/BookResolver";
 
 
 
@@ -16,7 +18,7 @@ const main =async () => {
     const conn = await createConnection({
         type: "postgres",
         database: "postgres",
-        entities: [Task,Category],
+        entities: [Task,Category,Book],
         logging: true,
         synchronize: true,
         username: "pgadmin",
@@ -26,7 +28,7 @@ const main =async () => {
 
     const apolloServer = new ApolloServer({
         schema: await buildSchema({
-          resolvers: [TaskResolver,CategoryResolver],
+          resolvers: [TaskResolver,CategoryResolver,BookResolver],
           validate: false,
         }),
         plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
