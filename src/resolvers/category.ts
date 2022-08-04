@@ -40,7 +40,7 @@ export class CategoryResolver {
 
   @Mutation(() => Boolean)
   async deleteCategory(@Arg("id") id: string) {
-    const category = await category.findOne({ where: { id } });
+    const category = await Category.findOne({ where: { id } });
     if (!category) throw new Error("Category not found!");
     await category.remove();
     return true;

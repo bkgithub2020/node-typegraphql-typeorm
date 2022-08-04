@@ -41,7 +41,7 @@ let CategoryResolver = class CategoryResolver {
         return category;
     }
     async deleteCategory(id) {
-        const category = await category.findOne({ where: { id } });
+        const category = await Category_1.TableCategory.findOne({ where: { id } });
         if (!category)
             throw new Error("Category not found!");
         await category.remove();
